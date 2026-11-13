@@ -5,8 +5,8 @@ Code=marketproductsimport
 Name=Market PRO products Import from CSV/Excel
 Category=tools
 Description=Plugin for importing data to Market PRO module from Excel files into Cotonti using PhpSpreadsheet
-Version=2.0.1
-Date=Feb 1Th, 2026
+Version=2.2.0
+Date=Nov 13Th, 2026
 Author=webitproff
 Copyright=(c) webitproff 2026 | https://github.com/webitproff
 Notes=
@@ -32,13 +32,12 @@ use_function_log=05:radio::0:Использовать функцию логир�
  * Plugin marketproductsimport for Cotonti 0.9.26, PHP 8.4+
  * Filename: marketproductsimport.setup.php
  * Purpose: Setup & Config File. Register data in $db_core, $db_auth and $db_config for the Plugin marketproductsimport
- * Date: Feb 1Th, 2026
+ * Date: Nov 13Th, 2026
  * @package marketproductsimport
- * @version 2.0.1
+ * @version 2.2.0
  * @author webitproff
- * @copyright Copyright (c) webitproff 2026 | https://github.com/webitproff
+ * @copyright Copyright (c) webitproff 2026 | https://github.com/webitproff/marketproductsimport-cotonti
  * @license BSD
  */
-
 defined('COT_CODE') or die('Wrong URL');
 
