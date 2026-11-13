@@ -6,14 +6,14 @@ Hooks=tools
 ==================== */
 /**
  * Market PRO products Import from CSV/Excel
- * Plugin marketproductsimport for Cotonti 0.9.26, PHP 8.4+
+ * Plugin marketproductsimport for Cotonti V.1, PHP 8.5+
  * Filename: marketproductsimport.tools.php
  * Purpose: Administration for the Plugin marketproductsimport
- * Date: Feb 1Th, 2026
+ * Date: Nov 13Th, 2026
  * @package marketproductsimport
- * @version 2.0.1
+ * @version 2.2.0
  * @author webitproff
- * @copyright Copyright (c) webitproff 2026 | https://github.com/webitproff
+ * @copyright Copyright (c) webitproff 2026 | https://github.com/webitproff/marketproductsimport-cotonti
  * @license BSD
  */
  
@@ -24,7 +24,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once cot_incfile('marketproductsimport', 'plug');
-require_once cot_langfile('marketproductsimport', 'plug');
+
 
 if (!cot_auth('plug', 'marketproductsimport', 'W')) {
     cot_die_message(403);
@@ -57,12 +57,52 @@ $pageFields = [
     'fieldmrkt_metadesc' => 'Meta Description <code>fieldmrkt_metadesc</code>',
     'fieldmrkt_text' => 'Text <code>fieldmrkt_text</code>',
     'fieldmrkt_costdflt' => 'Цена стандартная <code>fieldmrkt_costdflt</code>',
+    'fieldmrkt_cost_usd' => 'Цена USD <code>fieldmrkt_cost_usd</code>',
     'fieldmrkt_parser' => 'Parser <code></code>',
     'fieldmrkt_ownerid' => 'Owner ID <code>fieldmrkt_ownerid</code>',
     'fieldmrkt_date' => 'Date <code>fieldmrkt_date</code>',
     'fieldmrkt_updated' => 'Updated Date <code>fieldmrkt_updated</code>',
     'fieldmrkt_count' => 'Count <code>fieldmrkt_count</code>',
 ];
+
+
+$db_market = $db_x . 'market';
+// EXF: экстраполя cot_market (ключи с префиксом page_)
+$marketExtrafields = Cot::$extrafields[$db_market] ?? [];
+if (!empty($marketExtrafields) && is_array($marketExtrafields)) {
+    foreach ($marketExtrafields as $exfld) {
+        $exfldName  = 'page_' . $exfld['field_name'];
+        $exfldTitle = function_exists('cot_extrafield_title')
+            ? cot_extrafield_title($exfld, 'page_')
+            : ($exfld['field_description'] ?? $exfld['field_name']);
+        if ($exfldTitle === '') {
+            $exfldTitle = $exfld['field_name'];
+        }
+        $pageFields[$exfldName] = $exfldTitle . ' (extra)';
+    }
+}
+
+// EXF: экстраполя cot_xtradbrowmarket (ключи с префиксом xtra_).
+// Подключается только если активен плагин xtradbrowmarket.
+$xtraTable = $db_x . 'xtradbrowmarket';
+if (cot_plugin_active('xtradbrowmarket')) {
+    require_once cot_langfile('xtradbrowmarket', 'plug');
+    $xtraExtrafields = Cot::$extrafields[$xtraTable] ?? [];
+    if (!empty($xtraExtrafields) && is_array($xtraExtrafields)) {
+        foreach ($xtraExtrafields as $exfld) {
+            $exfldName  = 'xtra_' . $exfld['field_name'];
+            $exfldTitle = function_exists('cot_extrafield_title')
+                ? cot_extrafield_title($exfld, 'xtra_')
+                : ($exfld['field_description'] ?? $exfld['field_name']);
+            if ($exfldTitle === '') {
+                $exfldTitle = $exfld['field_name'];
+            }
+            $pageFields[$exfldName] = $exfldTitle . ' (xtradbrowmarket)';
+        }
+    }
+}
+
+// присваиваем шаблону имя части и/или локации расширения
 // присваиваем шаблону имя части и/или локации расширения
 $tpl_ExtCode          = 'marketproductsimport';   // код плагина в составе имени шаблона
 $tpl_PartExt          = 'tools';                 // говорим, что это админка плагина
